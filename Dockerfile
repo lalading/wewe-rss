@@ -10,16 +10,19 @@ WORKDIR /usr/src/app
 
 RUN --mount=type=cache,id=s/e47ef8ae-ccaf-42a5-b111-0ba16331845e-pnpm,target=/pnpm/store pnpm install --no-frozen-lockfile
 
-RUN pnpm run -r build
+RUN pnpm run build:server
+RUN pnpm run build:web
 
-RUN find /usr/src/app -name "index.hbs" -o -name "index.html"
-
+RUN echo "=== apps/web 目录 ===" && ls -la /usr/src/app/apps/web
+RUN echo "=== 查找 dist 目录 ===" && find /usr/src/app/apps/web -type d -name "dist" 2>/dev/null
+RUN echo "=== 查找 index.hbs ===" && find /usr/src/app -name "index.hbs" 2>/dev/null
 
 
 RUN pnpm deploy --filter=server --prod /app
-RUN pnpm deploy --filter=server --prod /app-sqlite
 
 RUN cd /app && pnpm exec prisma generate
+
+RUN pnpm deploy --filter=server --prod /app-sqlite
 
 RUN cd /app-sqlite && \
     rm -rf ./prisma && \
