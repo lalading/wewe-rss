@@ -26,6 +26,10 @@ RUN cd /app-sqlite && \
     mv prisma-sqlite prisma && \
     pnpm exec prisma generate
 
+RUN echo "=== apps dir ===" && ls -la /usr/src/app/apps
+RUN echo "=== find index.hbs ===" && find /usr/src/app -name "index.hbs" 2>/dev/null
+RUN echo "=== find dist dirs ===" && find /usr/src/app -type d -name "dist" 2>/dev/null
+
 FROM base AS app-sqlite
 
 RUN ls -la /usr/src/app/apps && echo "---" && ls -la /usr/src/app/apps/web 2>/dev/null || true && echo "---" && find /usr/src/app -name "index.hbs" 2>/dev/null
@@ -50,7 +54,6 @@ CMD ["/bin/sh", "-c", "npx prisma migrate deploy && node dist/main"]
 FROM base AS app
 COPY --from=build /app /app
 
-COPY --from=build /usr/src/app/apps/web/dist /app/client
 
 RUN ls -la /usr/src/app/apps && ls -la /usr/src/app/apps/web 2>/dev/null || true
 
