@@ -13,11 +13,6 @@ RUN --mount=type=cache,id=s/e47ef8ae-ccaf-42a5-b111-0ba16331845e-pnpm,target=/pn
 RUN pnpm run build:server
 RUN pnpm run build:web
 
-RUN echo "=== apps/web contents ===" && ls -la /usr/src/app/apps/web && echo "=== find dist ===" && find /usr/src/app/apps/web -maxdepth 2 -type d && echo "=== find index ===" && find /usr/src/app -name "index.hbs" -o -name "index.html" 2>/dev/null
-
-RUN echo "=== apps/web 目录 ===" && ls -la /usr/src/app/apps/web
-RUN echo "=== 查找 dist 目录 ===" && find /usr/src/app/apps/web -type d -name "dist" 2>/dev/null
-RUN echo "=== 查找 index.hbs ===" && find /usr/src/app -name "index.hbs" 2>/dev/null
 
 
 RUN pnpm deploy --filter=server --prod /app
@@ -31,13 +26,11 @@ RUN cd /app-sqlite && \
     mv prisma-sqlite prisma && \
     pnpm exec prisma generate
 
-RUN echo "=== apps dir ===" && ls -la /usr/src/app/apps
-RUN echo "=== find index.hbs ===" && find /usr/src/app -name "index.hbs" 2>/dev/null
-RUN echo "=== find dist dirs ===" && find /usr/src/app -type d -name "dist" 2>/dev/null
+
+
 
 FROM base AS app-sqlite
 
-RUN ls -la /usr/src/app/apps && echo "---" && ls -la /usr/src/app/apps/web 2>/dev/null || true && echo "---" && find /usr/src/app -name "index.hbs" 2>/dev/null
 
 WORKDIR /app
 
@@ -60,8 +53,7 @@ FROM base AS app
 COPY --from=build /app /app
 
 
-RUN ls -la /usr/src/app/apps && ls -la /usr/src/app/apps/web 2>/dev/null || true
-
+COPY --from=build /usr/src/app/apps/server/client /app/client
 WORKDIR /app
 
 EXPOSE 4000
