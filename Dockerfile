@@ -28,7 +28,7 @@ RUN cd /app-sqlite && \
 
 FROM base AS app-sqlite
 
-COPY --from=build /app/apps/web/dist /app/client
+RUN ls -la /usr/src/app/apps && echo "---" && ls -la /usr/src/app/apps/web 2>/dev/null || true && echo "---" && find /usr/src/app -name "index.hbs" 2>/dev/null
 
 WORKDIR /app
 
