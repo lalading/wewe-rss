@@ -14,9 +14,7 @@ RUN pnpm run -r build
 
 RUN find /usr/src/app -name "index.hbs" -o -name "index.html"
 
-RUN pnpm --filter web build
 
-RUN pnpm --filter client build
 
 RUN pnpm deploy --filter=server --prod /app
 RUN pnpm deploy --filter=server --prod /app-sqlite
@@ -34,7 +32,7 @@ COPY --from=build /app/apps/web/dist /app/client
 
 WORKDIR /app
 
-EXPOSE 8080
+EXPOSE 4000
 
 ENV NODE_ENV=production
 ENV HOST="0.0.0.0"
@@ -54,9 +52,11 @@ COPY --from=build /app /app
 
 COPY --from=build /usr/src/app/apps/web/dist /app/client
 
+RUN ls -la /usr/src/app/apps && ls -la /usr/src/app/apps/web 2>/dev/null || true
+
 WORKDIR /app
 
-EXPOSE 8080
+EXPOSE 4000
 
 ENV NODE_ENV=production
 ENV HOST="0.0.0.0"
