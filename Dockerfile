@@ -12,6 +12,8 @@ RUN --mount=type=cache,id=s/e47ef8ae-ccaf-42a5-b111-0ba16331845e-pnpm,target=/pn
 
 RUN pnpm run -r build
 
+RUN find /usr/src/app -name "index.hbs" -o -name "index.html"
+
 RUN pnpm --filter web build
 
 RUN pnpm --filter client build
