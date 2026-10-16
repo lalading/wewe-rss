@@ -12,6 +12,8 @@ RUN --mount=type=cache,id=s/e47ef8ae-ccaf-42a5-b111-0ba16331845e-pnpm,target=/pn
 
 RUN pnpm run -r build
 
+RUN pnpm --filter web build
+
 RUN pnpm --filter client build
 
 RUN pnpm deploy --filter=server --prod /app
@@ -25,11 +27,12 @@ RUN cd /app-sqlite && \
     pnpm exec prisma generate
 
 FROM base AS app-sqlite
-COPY --from=build /app/apps/client/dist /app/client
+
+COPY --from=build /app/apps/web/dist /app/client
 
 WORKDIR /app
 
-EXPOSE 4000
+EXPOSE 8080
 
 ENV NODE_ENV=production
 ENV HOST="0.0.0.0"
@@ -47,9 +50,11 @@ CMD ["/bin/sh", "-c", "npx prisma migrate deploy && node dist/main"]
 FROM base AS app
 COPY --from=build /app /app
 
+COPY --from=build /usr/src/app/apps/web/dist /app/client
+
 WORKDIR /app
 
-EXPOSE 4000
+EXPOSE 8080
 
 ENV NODE_ENV=production
 ENV HOST="0.0.0.0"
@@ -60,4 +65,4 @@ ENV DATABASE_URL=""
 
 RUN chmod +x ./docker-bootstrap.sh
 
-CMD ["./docker-bootstrap.sh"]
+CMD ["/bin/sh", "-c", "npx prisma migrate deploy && node dist/main"]
