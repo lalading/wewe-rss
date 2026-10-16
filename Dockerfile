@@ -12,6 +12,8 @@ RUN --mount=type=cache,id=s/e47ef8ae-ccaf-42a5-b111-0ba16331845e-pnpm,target=/pn
 
 RUN pnpm run -r build
 
+RUN pnpm --filter client build
+
 RUN pnpm deploy --filter=server --prod /app
 RUN pnpm deploy --filter=server --prod /app-sqlite
 
@@ -23,7 +25,7 @@ RUN cd /app-sqlite && \
     pnpm exec prisma generate
 
 FROM base AS app-sqlite
-COPY --from=build /app-sqlite /app
+COPY --from=build /app/apps/client/dist /app/client
 
 WORKDIR /app
 
