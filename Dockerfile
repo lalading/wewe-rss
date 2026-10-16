@@ -39,7 +39,7 @@ ENV DATABASE_TYPE="sqlite"
 
 RUN chmod +x ./docker-bootstrap.sh
 
-CMD ["./docker-bootstrap.sh"]
+CMD ["/bin/sh", "-c", "npx prisma migrate deploy && node dist/main"]
 
 
 FROM base AS app
