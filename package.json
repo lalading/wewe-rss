@@ -1,12 +1,4 @@
-"pnpm": {
-  "onlyBuiltDependencies": [
-    "@nestjs/core",
-    "@prisma/client",
-    "@prisma/engines",
-    "esbuild",
-    "prisma"
-  ]
-}
+
 
 {
   "name": "wewe-rss",
